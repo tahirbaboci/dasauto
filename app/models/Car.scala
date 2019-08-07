@@ -88,8 +88,25 @@ class Cars @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(im
     dbConfig.db.run(cars.filter(_.id === id).result.headOption)
   }
 
-  def listAll: Future[Seq[Car]] = {
-    dbConfig.db.run(cars.sortBy(_.id).result)
+  def listAllBy(sortby: String): Future[Seq[Car]] = {
+    if(sortby == "title"){
+      dbConfig.db.run(cars.sortBy(_.title).result)
+    }else if(sortby == "fuel_id"){
+      dbConfig.db.run(cars.sortBy(_.fuel_id).result)
+    }else if(sortby == "price"){
+      dbConfig.db.run(cars.sortBy(_.price).result)
+    }else if(sortby == "new_car"){
+      dbConfig.db.run(cars.sortBy(_.new_car).result)
+    }else if(sortby == "milage"){
+      dbConfig.db.run(cars.sortBy(_.milage).result)
+    }else if(sortby == "first_registration"){
+      dbConfig.db.run(cars.sortBy(_.first_registration).result)
+    }else if(sortby == "id") {
+      dbConfig.db.run(cars.sortBy(_.id).result)
+    }else {
+      //exception : "No filter has been applied or wrong property to sort"
+      dbConfig.db.run(cars.sortBy(_.id).result)
+    }
   }
 
 }

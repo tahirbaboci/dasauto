@@ -16,16 +16,14 @@ import scala.concurrent.Future
 
 class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerComponents, carService: CarService) extends AbstractController(cc) with Logging{
 
-  def index() = Action.async {implicit  request =>
-    logger.trace("index: ")
-    carService.listAllCars.map { cars =>
-      Ok(views.html.index())
-    }
+  def index() = Action {implicit  request =>
+    //logger.trace("index: ")
+    Ok(views.html.index())
   }
 
-  def listCars() = Action.async {implicit  request =>
+  def listCars(sortBy: String) = Action.async {implicit  request =>
     logger.trace("index: ")
-    carService.listAllCars.map { cars =>
+    carService.listAllCars(sortBy).map { cars =>
       Ok(Json.obj("Message" -> ("car '" + cars)))
     }
   }

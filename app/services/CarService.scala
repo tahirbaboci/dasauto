@@ -16,10 +16,10 @@ class CarService @Inject() (cars: Cars) {
   }
 
   def getCar(id: Int): Future[Option[Car]] = {
-    cars.get(id)
+    cars.getById(id)
   }
 
-  def listAllCars: Future[Seq[Car]] = {
-    cars.listAll
+  def listAllCars(sortBy: String): Future[Seq[Car]] = {
+    cars.listAllBy(sortBy)
   }
 }
