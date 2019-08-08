@@ -1,13 +1,15 @@
 package services
 
+
 import javax.inject.Inject
-import models.{Car, Cars}
+import models.{Car}
+import DAO.CarDAO
 
 import scala.concurrent.Future
 
-class CarService @Inject() (cars: Cars) {
+class CarService @Inject() (cars: CarDAO) {
 
-  def addCar(car: Car): Future[String] = {
+  def addCar(car: Car): Future[Int] = {
     cars.add(car)
   }
 
