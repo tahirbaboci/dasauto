@@ -15,7 +15,7 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
 
   class CarTable(tag: Tag) extends Table[Car](tag, "Car"){
 
-    def id = column[Int]("id", O.PrimaryKey,O.AutoInc)
+    def id = column[Option[Int]]("id", O.PrimaryKey,O.AutoInc)
     def title = column[String]("title")
     def fuel_id = column[Int]("fuel_id")
     def price = column[Int]("price")
