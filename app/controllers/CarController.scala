@@ -32,13 +32,20 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
 */
 
 
-  def listCars(sortBy: String) = Action.async {implicit  request =>
+  def listCars(sortBy: String) = cspAction.async {implicit  request =>
     logger.trace("ListCars: ")
+    val fields: List[String] = List("id", "title", "fuel_id", "price", "new_car", "milage", "first_registration")
     carService.listAllCars(sortBy)
       .map { cars =>
         if(cars != None){
-          Ok(Json.obj("Message" -> ("car '" + cars)))
-        } else {
+          if (!fields.contains(sortBy)){
+            Ok(Json.obj("Message" -> (s"The field you have choosen to sort is wrong, please check again")))
+          }
+          else {
+            Ok(Json.obj("Message" -> ("car '" + cars)))
+          }
+        }
+        else {
           Ok(Json.obj("Message" -> (s"No record of cars was found")))
         }
       }
@@ -49,12 +56,14 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
   }
 
-  def getCarById(id: Int) = Action.async {implicit request =>
+  def getCarById(id: Int) = cspAction.async {implicit request =>
+    logger.trace("getCarById: ")
     carService.getCar(id)
       .map { car =>
         if(car != None){
           Ok(Json.obj("Message" -> ("car '" + car)))
-        } else {
+        }
+        else {
           Ok(Json.obj("Message" -> (s"Car with id: $id Not Found")))
         }
       }
@@ -65,7 +74,8 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
   }
 
-  def addCar = Action { implicit request =>
+  def addCar = cspAction { implicit request =>
+    logger.trace("addCar: ")
     val car  = Json.fromJson[Car](request.body.asJson.get).get
     if(checkForRule(car)){
       carService.addCar(car)
@@ -82,6 +92,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
   }
 
   def modifyCar = Action { implicit request =>
+    logger.trace("modifyCar: ")
     val car  = Json.fromJson[Car](request.body.asJson.get).get
     if(checkForRule(car) && car.id != None){
       carService.updateCar(car)
@@ -101,7 +112,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
   }
 
   def deleteCar(id: Int) = Action.async {implicit  request =>
-    var message: String = ""
+    logger.trace("deleteCar: ")
     carService.deleteCar(id)
       .map { res =>
         if(res == 0){
@@ -141,7 +152,5 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
     else{
       true
     }
-
   }
-
 }
