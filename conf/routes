@@ -6,6 +6,7 @@
 # An example controller showing a sample home page
 GET     /listcars                                 controllers.CarController.listCars(sortBy:  String?="id")
 GET     /listsortedcars/:sortBy                   controllers.CarController.listCars(sortBy:  String)
+GET     /car/:id                                  controllers.CarController.getCarById(id: Int)
 POST    /car/addCar                               controllers.CarController.addCar
 GET     /car/deleteCar/:id                        controllers.CarController.deleteCar(id: Int)
 POST    /car/modifyCar                            controllers.CarController.modifyCar

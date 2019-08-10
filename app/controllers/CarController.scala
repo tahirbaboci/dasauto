@@ -31,6 +31,40 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
   }
 */
 
+
+  def listCars(sortBy: String) = Action.async {implicit  request =>
+    logger.trace("ListCars: ")
+    carService.listAllCars(sortBy)
+      .map { cars =>
+        if(cars != None){
+          Ok(Json.obj("Message" -> ("car '" + cars)))
+        } else {
+          Ok(Json.obj("Message" -> (s"No record of cars was found")))
+        }
+      }
+      .recover {
+        case e: Exception =>
+          logger.error(s"Could not list cars: $e")
+          NotFound(s"Failed to access to cars")
+      }
+  }
+
+  def getCarById(id: Int) = Action.async {implicit request =>
+    carService.getCar(id)
+      .map { car =>
+        if(car != None){
+          Ok(Json.obj("Message" -> ("car '" + car)))
+        } else {
+          Ok(Json.obj("Message" -> (s"Car with id: $id Not Found")))
+        }
+      }
+      .recover {
+        case e: Exception =>
+          logger.error(s"Could not get the car: $e")
+          NotFound(s"Failed to access to car with id $id")
+      }
+  }
+
   def addCar = Action { implicit request =>
     val car  = Json.fromJson[Car](request.body.asJson.get).get
     if(checkForRule(car)){
@@ -45,39 +79,6 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
     else {
       Ok(s"Cannot add the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have milage and first_registration data<br>2- USED CAR should have milage and first_registration date")
     }
-  }
-
-
-  def listCars(sortBy: String) = Action.async {implicit  request =>
-    logger.trace("ListCars: ")
-    carService.listAllCars(sortBy)
-      .map { cars =>
-        Ok(Json.obj("Message" -> ("car '" + cars)))
-      }
-      .recover {
-        case e: Exception =>
-          logger.error(s"Could not list cars: $e")
-          NotFound(s"Failed to access to cars")
-      }
-  }
-
-
-  def deleteCar(id: Int) = Action.async {implicit  request =>
-    var message: String = ""
-    carService.deleteCar(id)
-      .map { res =>
-        if(res == 0){
-          Ok(s"Car with id : $id does not exist")
-        }
-        else {
-          Ok(s"Car with id : $id deleted successfully")
-        }
-      }
-      .recover {
-        case e: Exception =>
-          logger.error(s"Failed to delete car: $e")
-          Forbidden(s"Failed to delete car with id : $id")
-      }
   }
 
   def modifyCar = Action { implicit request =>
@@ -97,6 +98,24 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
       Ok(s"Cannot update the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have milage and first_registration data<br>2- USED CAR should have milage and first_registration date<br>3- To update the car information you should provide the car id")
     }
+  }
+
+  def deleteCar(id: Int) = Action.async {implicit  request =>
+    var message: String = ""
+    carService.deleteCar(id)
+      .map { res =>
+        if(res == 0){
+          Ok(s"Car with id : $id does not exist")
+        }
+        else {
+          Ok(s"Car with id : $id deleted successfully")
+        }
+      }
+      .recover {
+        case e: Exception =>
+          logger.error(s"Failed to delete car: $e")
+          Forbidden(s"Failed to delete car with id : $id")
+      }
   }
 
   def show(x: Option[Int]) = x match {
