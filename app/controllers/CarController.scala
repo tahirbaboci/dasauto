@@ -33,31 +33,20 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
 
   def addCar = Action { implicit request =>
     val car  = Json.fromJson[Car](request.body.asJson.get).get
-    if(car.new_car == true && car.milage != Some(0)){
-      Future.successful {
-        Forbidden(s"forbidden to add Car : $car")
-      }
-      Ok(s"Car with title : ${car.title} failed to be added because you have added milage data for new car $car")
-    }
-    else if (car.new_car == true && car.first_registration != None){
-      Future.successful {
-        Forbidden(s"forbidden to add Car : $car")
-      }
-      Ok(s"Car with title : ${car.title} failed to be added because you have added first_registration data for new car ")
-    }
-    else {
+    if(checkForRule(car)){
       carService.addCar(car)
-        .map{ id =>
-          Ok(s"Car with id : $id added successfully")
-        }
         .recover {
           case e: Exception =>
             logger.error(s"Car creation failed: $e")
             Forbidden(s"Car $car can't be created")
         }
-      Ok(Json.toJson(car))
+      Ok(s"Car with title : '${car.title}' added successfully")
+    }
+    else {
+      Ok(s"Cannot add the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have milage and first_registration data<br>2- USED CAR should have milage and first_registration date")
     }
   }
+
 
   def listCars(sortBy: String) = Action.async {implicit  request =>
     logger.trace("ListCars: ")
@@ -72,10 +61,17 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
   }
 
-  def deleteCar(id: Int) = Action.async {implicit  request: Request[AnyContent] =>
+
+  def deleteCar(id: Int) = Action.async {implicit  request =>
+    var message: String = ""
     carService.deleteCar(id)
       .map { res =>
-        Ok(s"Car with id : $id deleted successfully")
+        if(res == 0){
+          Ok(s"Car with id : $id does not exist")
+        }
+        else {
+          Ok(s"Car with id : $id deleted successfully")
+        }
       }
       .recover {
         case e: Exception =>
@@ -84,6 +80,49 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
   }
 
+  def modifyCar = Action { implicit request =>
+    val car  = Json.fromJson[Car](request.body.asJson.get).get
+    if(checkForRule(car) && car.id != None){
+      carService.updateCar(car)
+        .recover {
+          case e: Exception =>
+            logger.error(s"Car updating failed: $e")
+            Forbidden(s"Car $car can't be updated")
+        }
+      Ok(s"Car with id : ${show(car.id)} updated successfully")
+    }
+    else{
+      Future.successful {
+        Forbidden(s"forbidden to update Car : $car")
+      }
+      Ok(s"Cannot update the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have milage and first_registration data<br>2- USED CAR should have milage and first_registration date<br>3- To update the car information you should provide the car id")
+    }
+  }
 
+  def show(x: Option[Int]) = x match {
+    case Some(s) => s
+    case None => None
+  }
+
+  //Rule : New cars cannot have milage and first_registration data
+  // Used cars should have milage and first_registration date
+  def checkForRule(car: Car): Boolean = {
+    if(car.new_car == true && car.milage != None){
+      false
+    }
+    else if (car.new_car == true && car.first_registration != None){
+      false
+    }
+    else if (car.new_car == false && car.milage == None) {
+      false
+    }
+    else if (car.new_car == false && car.first_registration == None) {
+      false
+    }
+    else{
+      true
+    }
+
+  }
 
 }
