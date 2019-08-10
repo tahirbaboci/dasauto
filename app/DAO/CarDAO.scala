@@ -38,6 +38,10 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
     dbConfig.db.run(cars.filter(_.id === id).delete)
   }
 
+  def updateCar(car: Car) : Future[Car.Id] = {
+    dbConfig.db.run(cars.filter(_.id === car.id).update(car))
+  }
+
   def getById(id: Int): Future[Option[Car]] = {
     dbConfig.db.run(cars.filter(_.id === id).result.headOption)
   }

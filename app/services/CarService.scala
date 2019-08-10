@@ -17,6 +17,10 @@ class CarService @Inject() (cars: CarDAO) {
     cars.delete(id)
   }
 
+  def updateCar(car: Car) : Future[Int] = {
+    cars.updateCar(car)
+  }
+
   def getCar(id: Int): Future[Option[Car]] = {
     cars.getById(id)
   }
