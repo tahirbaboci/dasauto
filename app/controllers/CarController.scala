@@ -33,11 +33,17 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
 
   def addCar = Action { implicit request =>
     val car  = Json.fromJson[Car](request.body.asJson.get).get
-    if(car.new_car == true && (car.milage != 0 || car.first_registration != null)){
+    if(car.new_car == true && car.milage != Some(0)){
       Future.successful {
         Forbidden(s"forbidden to add Car : $car")
       }
-      Ok(s"Car with title : ${car.title} failed to be added because you have added milage or/and first_registration data for new car")
+      Ok(s"Car with title : ${car.title} failed to be added because you have added milage data for new car $car")
+    }
+    else if (car.new_car == true && car.first_registration != None){
+      Future.successful {
+        Forbidden(s"forbidden to add Car : $car")
+      }
+      Ok(s"Car with title : ${car.title} failed to be added because you have added first_registration data for new car ")
     }
     else {
       carService.addCar(car)
