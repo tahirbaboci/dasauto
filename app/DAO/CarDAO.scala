@@ -3,7 +3,7 @@ package DAO
 import java.sql.Date
 
 import javax.inject.Inject
-import models.Car
+import models.{Car, Fuel}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
 import slick.jdbc.JdbcProfile
 import slick.jdbc.MySQLProfile.api._
@@ -20,13 +20,20 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
     def fuel_id = column[Int]("fuel_id")
     def price = column[Int]("price")
     def new_car = column[Boolean]("new_car")
-    def milage = column[Option[Int]]("milage")
+    def mileage = column[Option[Int]]("mileage")
     def first_registration = column[Option[Date]]("first_registration")
 
     override def * =
-      (id, title, fuel_id, price, new_car, milage, first_registration) <> ((Car.apply _).tupled, Car.unapply)
+      (id, title, fuel_id, price, new_car, mileage, first_registration) <> ((Car.apply _).tupled, Car.unapply)
   }
 
+  class FuelTable(tag: Tag) extends Table[Fuel](tag, "Fuel"){
+
+    def id = column[Int]("id", O.PrimaryKey,O.AutoInc)
+    def fueltype = column[String]("fuel")
+    override def * =
+      (id, fueltype) <> ((Fuel.apply _).tupled, Fuel.unapply)
+  }
 
   val cars = TableQuery[CarTable]
 
@@ -56,7 +63,7 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
     }else if(sortby == "new_car"){
       dbConfig.db.run(cars.sortBy(_.new_car).result)
     }else if(sortby == "milage"){
-      dbConfig.db.run(cars.sortBy(_.milage).result)
+      dbConfig.db.run(cars.sortBy(_.mileage).result)
     }else if(sortby == "first_registration"){
       dbConfig.db.run(cars.sortBy(_.first_registration).result)
     }else if(sortby == "id") {

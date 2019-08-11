@@ -8,7 +8,6 @@ import play.filters.csp.CSPActionBuilder
 import services.CarService
 import models.{Car}
 import play.api.libs.json.Json
-import play.libs.exception.ExceptionUtils
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -16,25 +15,9 @@ import scala.concurrent.Future
 
 class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerComponents, carService: CarService) extends AbstractController(cc) with Logging{
 
-
-/*
-  def addCar: Action[Car] = Action.async(parse.json[Car]) { request =>
-    logger.trace("addCar: ")
-    request.body
-      carService.addCar(request.body)
-        .map{ id =>
-          Ok(s"Car with id : $id added successfully")
-        }
-        .recover {
-          case ex: Exception => Ok(ex.getCause.getMessage)
-        }
-  }
-*/
-
-
   def listCars(sortBy: String) = cspAction.async {implicit  request =>
     logger.trace("ListCars: ")
-    val fields: List[String] = List("id", "title", "fuel_id", "price", "new_car", "milage", "first_registration")
+    val fields: List[String] = List("id", "title", "fuel_id", "price", "new_car", "mileage", "first_registration")
     carService.listAllCars(sortBy)
       .map { cars =>
         if(cars != None){
@@ -87,7 +70,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       Ok(s"Car with title : '${car.title}' added successfully")
     }
     else {
-      Ok(s"Cannot add the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have milage and first_registration data<br>2- USED CAR should have milage and first_registration date")
+      Ok(s"Cannot add the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have mileage and first_registration data<br>2- USED CAR should have mileage and first_registration date")
     }
   }
 
@@ -107,7 +90,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       Future.successful {
         Forbidden(s"forbidden to update Car : $car")
       }
-      Ok(s"Cannot update the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have milage and first_registration data<br>2- USED CAR should have milage and first_registration date<br>3- To update the car information you should provide the car id")
+      Ok(s"Cannot update the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have mileage and first_registration data<br>2- USED CAR should have mileage and first_registration date<br>3- To update the car information you should provide the car id")
     }
   }
 
@@ -134,16 +117,16 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
     case None => None
   }
 
-  //Rule : New cars cannot have milage and first_registration data
-  // Used cars should have milage and first_registration date
+  //Rule : New cars cannot have mileage and first_registration data
+  // Used cars should have mileage and first_registration date
   def checkForRule(car: Car): Boolean = {
-    if(car.new_car == true && car.milage != None){
+    if(car.new_car == true && car.mileage != None){
       false
     }
     else if (car.new_car == true && car.first_registration != None){
       false
     }
-    else if (car.new_car == false && car.milage == None) {
+    else if (car.new_car == false && car.mileage == None) {
       false
     }
     else if (car.new_car == false && car.first_registration == None) {
