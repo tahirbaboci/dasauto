@@ -61,6 +61,6 @@ curl -i -X POST http://localhost:9000/car/deleteCar/"the ID number of car advert
 
 
 # Improvements
-1- Create a build in database like H2
-2- Create Controller tests
-3- CORS Request support
+ - Create a build in database like H2
+ - Create Controller tests
+ - CORS Request support
