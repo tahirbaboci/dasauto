@@ -3,8 +3,7 @@ package controllers
 import javax.inject._
 import play.api.Logging
 import play.api.libs.json.Json._
-import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents, Request, Result}
-import play.filters.csp.CSPActionBuilder
+import play.api.mvc.{AbstractController, ControllerComponents}
 import services.CarService
 import models.Car
 import play.api.libs.json.Json
@@ -13,9 +12,9 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 
-class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerComponents, carService: CarService) extends AbstractController(cc) with Logging{
+class CarController @Inject() (cc: ControllerComponents, carService: CarService) extends AbstractController(cc) with Logging{
 
-  def listCars(sortBy: String) = cspAction.async {implicit  request =>
+  def listCars(sortBy: String) = Action.async {implicit  request =>
     logger.trace("ListCars: ")
     val fields: List[String] = List("id", "title", "fuel_id", "price", "new_car", "mileage", "first_registration")
     carService.listAllCars(sortBy)
@@ -39,7 +38,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
   }
 
-  def getCarById(id: Int) = cspAction.async {implicit request =>
+  def getCarById(id: Int) = Action.async {implicit request =>
     logger.trace("getCarById: ")
     carService.getCar(id)
       .map { car =>
@@ -57,7 +56,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
       }
   }
 
-  def addCar = cspAction { implicit request =>
+  def addCar = Action { implicit request =>
     logger.trace("addCar: ")
     val car  = Json.fromJson[Car](request.body.asJson.get).get
     if(checkForRule(car)){
