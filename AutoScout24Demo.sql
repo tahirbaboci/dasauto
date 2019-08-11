@@ -31,18 +31,18 @@ SET time_zone = "+00:00";
 CREATE TABLE `Car` (
   `id` int(11) NOT NULL,
   `title` text COLLATE latin1_general_ci NOT NULL,
-  `fuel_id` int(11) NOT NULL,
+  `fuelId` int(11) NOT NULL,
   `price` int(11) NOT NULL,
-  `new_car` tinyint(1) NOT NULL,
+  `newCar` tinyint(1) NOT NULL,
   `mileage` int(11) DEFAULT NULL,
-  `first_registration` date DEFAULT NULL
+  `firstRegistration` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --
 -- Dumping data for table `Car`
 --
 
-INSERT INTO `Car` (`id`, `title`, `fuel_id`, `price`, `new_car`, `mileage`, `first_registration`) VALUES
+INSERT INTO `Car` (`id`, `title`, `fuelId`, `price`, `newCar`, `mileage`, `firstRegistration`) VALUES
 (2, 'BMW', 2, 90000, 0, 120000, '1996-03-06'),
 (12, 'audi', 2, 2333, 0, 3434, '2012-10-02'),
 (14, 'fiat', 2, 2333, 0, 3434, '2013-08-01'),
@@ -57,7 +57,7 @@ INSERT INTO `Car` (`id`, `title`, `fuel_id`, `price`, `new_car`, `mileage`, `fir
 
 CREATE TABLE `Fuel` (
   `id` int(11) NOT NULL,
-  `fueltype` varchar(255) COLLATE latin1_general_ci NOT NULL
+  `fuelType` varchar(255) COLLATE latin1_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
 
 --

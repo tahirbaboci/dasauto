@@ -2,8 +2,8 @@ package services
 
 
 import javax.inject.Inject
-import models.{Car}
-import DAO.CarDAO
+import models.Car
+import dao.CarDAO
 
 import scala.concurrent.Future
 
@@ -13,11 +13,11 @@ class CarService @Inject() (cars: CarDAO) {
     cars.add(car)
   }
 
-  def deleteCar(id: Int): Future[Int] = {
+  def deleteCar(id: Int): Future[Boolean] = {
     cars.delete(id)
   }
 
-  def updateCar(car: Car) : Future[Int] = {
+  def updateCar(car: Car) : Future[Unit] = {
     cars.updateCar(car)
   }
 
