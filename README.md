@@ -3,6 +3,14 @@
 This is a car advert demo REST API. It is developed in Play Framework with Scala programming language.
 Used Slick with Mysql database. Data is represented in Json format.
 
+# Setup
+
+1- Import the SQL file to mysql database.
+2- Open project and build it.
+3- Execute 
+```bash
+sbt run
+```
 
 # REST API 
 
@@ -24,14 +32,35 @@ curl -i -X GET http://localhost:9000/getcar/"the ID number of car advert"
 ```
 
 3- <b>Add car advert :</b>
+POST json object to add new car advert
   ```bash
-curl -i -X POST ...
+{
+	"title": "Fiat",
+	"fuelId": 1,
+	"price" : 233224323,
+	"newCar": true
+}
 ```
 
 4- <b>Modify car advert :</b>
+POST the json object with id to modify the car advert
   ```bash
-curl -i -X POST ...
+{
+	"id": 22,
+	"title": "Fiat_modified",
+	"fuelId": 1,
+	"price" : 233224323,
+	"newCar": true
+}
 ```
 
-# Improvements
+5- <b>Delete car advert :</b>
+  ```bash
+curl -i -X POST http://localhost:9000/car/deleteCar/"the ID number of car advert"
+```
 
+
+# Improvements
+1- Create a build in database like H2
+2- Create Controller tests
+3- CORS Request support
