@@ -1,12 +1,14 @@
 package controllers
 
+import java.text.SimpleDateFormat
+
 import javax.inject._
 import play.api.Logging
 import play.api.libs.json.Json._
 import play.api.mvc.{AbstractController, Action, AnyContent, ControllerComponents, Request, Result}
 import play.filters.csp.CSPActionBuilder
 import services.CarService
-import models.{Car}
+import models.Car
 import play.api.libs.json.Json
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -25,7 +27,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
             Ok(Json.obj("Message" -> (s"The field you have choosen to sort is wrong, please check again")))
           }
           else {
-            Ok(Json.obj("Message" -> ("car '" + cars)))
+            Ok(Json.toJson(cars))
           }
         }
         else {
@@ -44,7 +46,7 @@ class CarController @Inject() (cspAction: CSPActionBuilder, cc: ControllerCompon
     carService.getCar(id)
       .map { car =>
         if(car != None){
-          Ok(Json.obj("Message" -> ("car '" + car)))
+          Ok(Json.toJson(car))
         }
         else {
           Ok(Json.obj("Message" -> (s"Car with id: $id Not Found")))

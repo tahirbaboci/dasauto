@@ -1,6 +1,7 @@
 package DAO
 
 import java.sql.Date
+import java.text.SimpleDateFormat
 
 import javax.inject.Inject
 import models.{Car, Fuel}
@@ -22,7 +23,6 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
     def new_car = column[Boolean]("new_car")
     def mileage = column[Option[Int]]("mileage")
     def first_registration = column[Option[Date]]("first_registration")
-
     override def * =
       (id, title, fuel_id, price, new_car, mileage, first_registration) <> ((Car.apply _).tupled, Car.unapply)
   }
@@ -34,6 +34,7 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
     override def * =
       (id, fueltype) <> ((Fuel.apply _).tupled, Fuel.unapply)
   }
+
 
   val cars = TableQuery[CarTable]
 
