@@ -5,9 +5,9 @@ Used Slick with Mysql database. Data is represented in Json format.
 
 # Setup
 
-1- Import the SQL file to mysql database.
-2- Open project and build it.
-3- Execute 
+ - Import the SQL file to mysql database.
+ - Open project and build it.
+ - Execute 
 ```bash
 sbt run
 ```
