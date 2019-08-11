@@ -64,7 +64,7 @@ CREATE TABLE `Fuel` (
 -- Dumping data for table `Fuel`
 --
 
-INSERT INTO `Fuel` (`id`, `fueltype`) VALUES
+INSERT INTO `Fuel` (`id`, `fuelType`) VALUES
 (1, 'diesel'),
 (2, 'gasoline');
 
@@ -77,7 +77,7 @@ INSERT INTO `Fuel` (`id`, `fueltype`) VALUES
 --
 ALTER TABLE `Car`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `Car_Category-Car` (`fuel_id`);
+  ADD KEY `Car_Category-Car` (`fuelId`);
 
 --
 -- Indexes for table `Fuel`
@@ -109,7 +109,7 @@ ALTER TABLE `Fuel`
 -- Constraints for table `Car`
 --
 ALTER TABLE `Car`
-  ADD CONSTRAINT `Car_Category-Car` FOREIGN KEY (`fuel_id`) REFERENCES `Fuel` (`id`);
+  ADD CONSTRAINT `Car_Category-Car` FOREIGN KEY (`fuelId`) REFERENCES `Fuel` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
