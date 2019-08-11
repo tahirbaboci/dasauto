@@ -21,14 +21,14 @@ class CarController @Inject() (cc: ControllerComponents, carService: CarService)
       .map { cars =>
         if(cars != None){
           if (!fields.contains(sortBy)){
-            Ok(Json.obj("Message" -> (s"The field you have choosen to sort is wrong, please check again")))
+            BadRequest(Json.obj("status" -> "400" ,"Message" -> (s"The field you have choosen to sort is wrong, please check again")))
           }
           else {
-            Ok(Json.toJson(cars))
+            Ok(Json.obj("status" -> "200", "Car Adverts" -> (Json.toJson(cars))))
           }
         }
         else {
-          Ok(Json.obj("Message" -> (s"No record of cars was found")))
+          BadRequest(Json.obj("status" -> "400", "Message" -> (s"No record of cars was found")))
         }
       }
       .recover {
@@ -43,10 +43,10 @@ class CarController @Inject() (cc: ControllerComponents, carService: CarService)
     carService.getCar(id)
       .map { car =>
         if(car != None){
-          Ok(Json.toJson(car))
+          Ok(Json.obj("status" -> "200", "Car Advert" -> (Json.toJson(car))))
         }
         else {
-          Ok(Json.obj("Message" -> (s"Car with id: $id Not Found")))
+          BadRequest(Json.obj("status" -> "400", "Message" -> (s"Car with id: $id Not Found")))
         }
       }
       .recover {
@@ -66,10 +66,13 @@ class CarController @Inject() (cc: ControllerComponents, carService: CarService)
             logger.error(s"Car creation failed: $e")
             Forbidden(s"Car $car can't be created")
         }
-      Ok(s"Car with title : '${car.title}' added successfully")
+      Ok(Json.obj("status" -> "200", "Message" -> (s"Car with title : '${car.title}' added successfully")))
     }
     else {
-      Ok(s"Cannot add the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have mileage and first_registration data<br>2- USED CAR should have mileage and first_registration date")
+      BadRequest(Json.obj("status" -> "400", "Message" -> ("Cannot add the car, please check the rules below"),
+                                                    "Rule 1" -> "NEW CAR cannot have mileage and first_registration data",
+                                                    "Rule 2" -> "USED CAR should have mileage and first_registration date"))
+      //Ok(s"Cannot add the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have mileage and first_registration data<br>2- USED CAR should have mileage and first_registration date")
     }
   }
 
@@ -83,13 +86,16 @@ class CarController @Inject() (cc: ControllerComponents, carService: CarService)
             logger.error(s"Car updating failed: $e")
             Forbidden(s"Car $car can't be updated")
         }
-      Ok(s"Car with id : ${show(car.id)} updated successfully")
+      Ok(Json.obj("status" -> "200", "Message" -> (s"Car with id : ${show(car.id)} updated successfully")))
     }
     else{
       Future.successful {
         Forbidden(s"forbidden to update Car : $car")
       }
-      Ok(s"Cannot update the car, please check the rules below<br><br>Rules : <br>1- NEW CAR cannot have mileage and first_registration data<br>2- USED CAR should have mileage and first_registration date<br>3- To update the car information you should provide the car id")
+      BadRequest(Json.obj("status" -> "400", "Message" -> ("Cannot add the car, please check the rules below"),
+        "Rule 1" -> "NEW CAR cannot have mileage and first_registration data",
+        "Rule 2" -> "USED CAR should have mileage and first_registration date",
+        "Rule 3" -> "You should provide ID to be able to update the car advert"))
     }
   }
 
@@ -98,10 +104,10 @@ class CarController @Inject() (cc: ControllerComponents, carService: CarService)
     carService.deleteCar(id)
       .map { res =>
         if(res == 0){
-          Ok(s"Car with id : $id does not exist")
+          Ok(Json.obj("status" -> "200", "Message" -> (s"Car with id : $id does not exist")))
         }
         else {
-          Ok(s"Car with id : $id deleted successfully")
+          Ok(Json.obj("status" -> "200", "Message" -> (s"Car with id : $id deleted successfully")))
         }
       }
       .recover {
