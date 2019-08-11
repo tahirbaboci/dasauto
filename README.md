@@ -5,7 +5,7 @@ Used Slick with Mysql database. Data is represented in Json format.
 
 # Setup
 
- - Import the SQL file to mysql database.
+ - Import the SQL file (AutoScout24Demo.sql) to mysql database.
  - Open project and build it.
  - Execute 
 ```bash
