@@ -1,8 +1,6 @@
 package DAO
 
-import java.sql.Date
-import java.text.SimpleDateFormat
-
+import java.time.LocalDate
 import javax.inject.Inject
 import models.{Car, Fuel}
 import play.api.db.slick.{DatabaseConfigProvider, HasDatabaseConfigProvider}
@@ -22,7 +20,7 @@ class CarDAO @Inject() (protected val dbConfigProvider: DatabaseConfigProvider)(
     def price = column[Int]("price")
     def new_car = column[Boolean]("new_car")
     def mileage = column[Option[Int]]("mileage")
-    def first_registration = column[Option[Date]]("first_registration")
+    def first_registration = column[Option[LocalDate]]("first_registration")
     override def * =
       (id, title, fuel_id, price, new_car, mileage, first_registration) <> ((Car.apply _).tupled, Car.unapply)
   }

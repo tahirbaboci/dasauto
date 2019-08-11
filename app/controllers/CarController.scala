@@ -1,7 +1,5 @@
 package controllers
 
-import java.text.SimpleDateFormat
-
 import javax.inject._
 import play.api.Logging
 import play.api.libs.json.Json._
