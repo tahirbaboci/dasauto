@@ -1,7 +1,8 @@
 # Description 
-
-This is a car advert demo REST API. It is developed in Play Framework with Scala programming language.
-Used Slick with Mysql database. Data is represented in Json format.
+This is challenge task with Scala programming language in Play Framework. The task is a to develop an REST API for car advertisement. 
+ - It is developed in Play Framework with Scala programming language.
+ - Used Slick with Mysql database. 
+ - Data is represented in Json format.
 
 # Setup
 
@@ -61,6 +62,6 @@ curl -i -X POST http://localhost:9000/car/deleteCar/"the ID number of car advert
 
 
 # Improvements
- - Create a build in database like H2
+ - Create a build in database like H2 or Learn about aws DynamoDB and replace MySql to aws DynamoDB 
  - Create Controller tests
  - CORS Request support
