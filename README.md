@@ -1,5 +1,5 @@
 # Description 
-This is challenge task with Scala programming language in Play Framework. The task is a to develop an REST API for car advertisement. 
+This is challenge task with Scala programming language in Play Framework. The task is to develop an REST API for car advertisement. 
  - It is developed in Play Framework with Scala programming language.
  - Used Slick with Mysql database. 
  - Data is represented in Json format.
